@@ -15,8 +15,8 @@ name: Pipeline — Daily
 # Stage outcome is appended to $GITHUB_STEP_SUMMARY.
 
 on:
-  schedule:
-    - cron: '0 6 * * *'   # daily at 06:00 UTC
+  # Schedule disabled: no real backlog for these agents to act on in this repo yet.
+  # Trigger manually (workflow_dispatch) once the factory automation is needed.
   workflow_dispatch:
 
 concurrency:
