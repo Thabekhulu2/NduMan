@@ -33,8 +33,8 @@ frontend:
   env:
     # Browser traffic must use the public HTTPS Supabase endpoint so the app
     # avoids mixed-content blocking when served over HTTPS.
-    supabaseUrl: "<SUPABASE_URL>"
-    apiUrl: "<SUPABASE_URL>/functions/v1"
+    supabaseUrl: "https://<SUPABASE_URL>"
+    apiUrl: "https://<SUPABASE_URL>/functions/v1"
   secrets:
     supabaseAnonKey:
       secretName: "frontend-secrets-<DEV_NAMESPACE>"

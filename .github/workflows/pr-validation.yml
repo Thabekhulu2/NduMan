@@ -165,6 +165,13 @@ jobs:
   supabase-seed:
     name: Supabase demo-baseline seed
     runs-on: ubuntu-latest
+    # Not yet implemented: supabase/tests/run_demo_baseline_seed.sh and the
+    # demo_baseline_seed.sql assertions it's meant to run were never included
+    # in the template, and this project hasn't defined baseline demo seed data
+    # yet (supabase/seed.sql is intentionally empty). Writing the script now
+    # would mean inventing what "baseline demo data" is for this project,
+    # which is a product decision, not a CI fix. Skipped until that's decided.
+    if: false
     steps:
       - uses: actions/checkout@v4
 
@@ -190,6 +197,11 @@ jobs:
   supabase-rpc-guards:
     name: Supabase direct-DB write-RPC guard contracts
     runs-on: ubuntu-latest
+    # Not yet implemented: supabase/tests/run_direct_db_write_rpc_guards.sh was
+    # never included in the template, and this repo has no direct-DB write RPCs
+    # to guard yet (no migration defines one). Skipped until there's something
+    # real to test.
+    if: false
     steps:
       - uses: actions/checkout@v4
 
@@ -199,6 +211,11 @@ jobs:
   supabase-seed-demo-users:
     name: Supabase seed-demo-users integration tests
     runs-on: ubuntu-latest
+    # Not yet implemented: supabase/tests/run_seed_demo_users.sh was never
+    # included in the template, and this project hasn't defined what demo
+    # users it needs (no auth users, no roles/personas decided). Skipped
+    # until that's decided.
+    if: false
     steps:
       - uses: actions/checkout@v4
 
