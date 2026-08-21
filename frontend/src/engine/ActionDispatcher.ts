@@ -161,7 +161,7 @@ export function createActionDispatcher(config: ActionDispatcherConfig) {
         case 'invoke': {
           if (!action.function) throw new Error('Function name required for invoke');
           result = await supabase.functions.invoke(action.function, {
-            body: data,
+            body: data as Record<string, unknown>,
           });
           break;
         }

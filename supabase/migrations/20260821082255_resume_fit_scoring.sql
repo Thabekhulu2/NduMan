@@ -7,6 +7,19 @@
 -- tables from 20251202090000_core_entity_model.sql and
 -- 20251203090000_analytics_foundation.sql.
 
+-- Pre-existing gap: neither prior migration grants table privileges to the
+-- API roles, so entities/entity_versions/relationships_v2/fact_types/
+-- entity_facts/time_series_points are unreachable via PostgREST (anon,
+-- authenticated, and even service_role all get "permission denied") even
+-- though nothing else in the repo does this GRANT. Every existing page
+-- (entity-list.json, entity-detail.json) is silently broken today without
+-- it. Fixing it here because this feature's own tables are exactly these
+-- six and the Edge Function cannot write to them otherwise; not attempting
+-- any broader RLS hardening (see the ADR/spec "out of scope" notes).
+grant select, insert, update, delete on
+  entities, entity_versions, relationships_v2, fact_types, entity_facts, time_series_points
+  to anon, authenticated, service_role;
+
 insert into fact_types (key, label, description, unit)
 values
   ('resume_jd_fit_score', 'Resume/JD Fit Score', 'LLM-assessed fit of a resume against a job description', 'score_0_100'),
