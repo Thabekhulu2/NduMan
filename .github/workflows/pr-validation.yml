@@ -151,6 +151,12 @@ jobs:
         run: bash charts/app/ci-test.sh
 
       - name: Frontend entrypoint runtime-contract tests
+        # Not yet implemented: frontend/docker/test-entrypoint.sh doesn't exist, and
+        # frontend/Dockerfile has no custom ENTRYPOINT (it's a dev-only image that
+        # runs `npm run dev` directly via CMD) -- there's no runtime-config-injection
+        # contract here to test yet. Skipped until a real production image with a
+        # runtime entrypoint exists.
+        if: false
         run: bash frontend/docker/test-entrypoint.sh
 
       - name: Upload helm results (trend history)
