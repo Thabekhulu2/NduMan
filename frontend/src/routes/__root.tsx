@@ -30,8 +30,9 @@ function RootComponent() {
 
 function Header() {
   return (
-    <header className="h-16 border-b bg-card flex items-center px-6">
-      <h1 className="text-xl font-semibold">JSON UI Engine</h1>
+    <header className="h-16 border-b bg-card flex items-center gap-3 px-6">
+      <img src="/adapt-it-logo.webp" alt="Adapt IT" className="h-8 w-auto" />
+      <h1 className="text-xl font-semibold">NduMan</h1>
     </header>
   );
 }
@@ -88,6 +89,26 @@ function Sidebar() {
             <NavLink to="question" icon={FileQuestion} label="Questions" />
             <NavLink to="person" icon={UserCircle} label="People" />
             <NavLink to="evidence" icon={FileText} label="Evidence" />
+          </div>
+        </div>
+
+        <div className="pt-4">
+          <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Hiring
+          </h3>
+          <div className="mt-2 space-y-1">
+            <Link
+              to="/resumes"
+              className={cn(
+                'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                location.pathname === '/resumes'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'hover:bg-muted'
+              )}
+            >
+              <FileText className="h-4 w-4" />
+              Resume Scoring
+            </Link>
           </div>
         </div>
       </nav>

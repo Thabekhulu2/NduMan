@@ -37,8 +37,9 @@ name: Pipeline — Fast
 # (and in the hourly/daily pipelines).
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'   # every ~15 min (single pass); GitHub may run it less often under load
+  # Schedule disabled: this repo has no real backlog/PR queue for the factory
+  # agents to act on yet, so the scheduled sweep just fails/no-ops every run.
+  # Trigger manually (workflow_dispatch) once the factory automation is needed.
   workflow_dispatch:
 
 concurrency:

@@ -19,8 +19,8 @@ name: Pipeline — Hourly
 # Stage outcome is appended to $GITHUB_STEP_SUMMARY.
 
 on:
-  schedule:
-    - cron: '30 * * * *'   # hourly at :30, offset from pipeline-fast (:00)
+  # Schedule disabled: no real backlog for these agents to act on in this repo yet.
+  # Trigger manually (workflow_dispatch) once the factory automation is needed.
   workflow_dispatch:
 
 concurrency:

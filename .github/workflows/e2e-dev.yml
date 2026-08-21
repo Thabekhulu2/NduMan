@@ -5,8 +5,9 @@ name: E2E (dev environment)
 # deduplicated incident so the factory can pick it up.
 
 on:
-  schedule:
-    - cron: '17 * * * *'   # hourly (off the :00 mark)
+  # Hourly schedule disabled: there is no deployed dev environment in this repo
+  # for Playwright to smoke-test yet, so the scheduled run just fails every hour.
+  # Still runs after a real Deploy Dev completion, or on demand.
   workflow_dispatch:
   workflow_run:
     workflows: ["Deploy Dev"]

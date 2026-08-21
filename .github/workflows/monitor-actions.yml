@@ -1,8 +1,8 @@
 name: Monitor - Actions Queue
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'   # every 15 minutes
+  # Schedule disabled: nothing to monitor yet in this repo (no self-hosted
+  # runners, no active deploy pipeline). Trigger manually if needed.
   workflow_dispatch:
 
 concurrency:

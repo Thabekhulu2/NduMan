@@ -1,0 +1,308 @@
+{
+  "id": "resume-scorecard",
+  "title": "Resume Scoring",
+  "state": {
+    "candidateName": "",
+    "resumeText": "",
+    "jdText": "",
+    "resumeFile": null,
+    "resumeFilePath": null,
+    "isScoring": false,
+    "scoreError": null,
+    "result": null
+  },
+  "layout": {
+    "type": "Stack",
+    "props": { "spacing": 6 },
+    "children": [
+      {
+        "type": "Heading",
+        "props": { "level": 1, "children": "Resume Scoring" }
+      },
+      {
+        "type": "Grid",
+        "props": { "columns": 2, "gap": 6 },
+        "children": [
+          {
+            "type": "Card",
+            "props": { "title": "Candidate & Job" },
+            "children": [
+              {
+                "type": "Stack",
+                "props": { "spacing": 4 },
+                "children": [
+                  {
+                    "type": "Input",
+                    "props": {
+                      "label": "Candidate Name",
+                      "value": "{{state.candidateName}}",
+                      "onChange": {
+                        "action": "setState",
+                        "key": "candidateName",
+                        "value": "{{event.target.value}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "Textarea",
+                    "props": {
+                      "label": "Resume Text",
+                      "rows": 10,
+                      "placeholder": "Paste the resume text here",
+                      "value": "{{state.resumeText}}",
+                      "onChange": {
+                        "action": "setState",
+                        "key": "resumeText",
+                        "value": "{{event.target.value}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "FileUpload",
+                    "props": {
+                      "label": "Resume File (optional, for record-keeping)",
+                      "accept": ".pdf,.txt",
+                      "fileName": "{{state.resumeFile.name}}",
+                      "onChange": {
+                        "action": "setState",
+                        "key": "resumeFile",
+                        "value": "{{event.target.files.0}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "Textarea",
+                    "props": {
+                      "label": "Job Description",
+                      "rows": 10,
+                      "placeholder": "Paste the job description here",
+                      "value": "{{state.jdText}}",
+                      "onChange": {
+                        "action": "setState",
+                        "key": "jdText",
+                        "value": "{{event.target.value}}"
+                      }
+                    }
+                  },
+                  {
+                    "type": "Alert",
+                    "if": "{{state.scoreError}}",
+                    "props": {
+                      "variant": "destructive",
+                      "title": "Scoring failed",
+                      "description": "{{state.scoreError}}"
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "props": {
+                      "disabled": "{{state.isScoring}}",
+                      "children": "{{state.isScoring ? 'Scoring...' : 'Score Candidate'}}",
+                      "onClick": {
+                        "action": "sequence",
+                        "actions": [
+                          { "action": "setState", "key": "isScoring", "value": true },
+                          { "action": "setState", "key": "scoreError", "value": null },
+                          {
+                            "action": "conditional",
+                            "condition": "{{state.resumeFile}}",
+                            "then": {
+                              "action": "apiCall",
+                              "operation": "storageUpload",
+                              "data": {
+                                "bucket": "resumes",
+                                "path": "{{state.resumeFile.name}}",
+                                "file": "{{state.resumeFile}}"
+                              },
+                              "onSuccess": {
+                                "action": "setState",
+                                "key": "resumeFilePath",
+                                "value": "{{event.data.path}}"
+                              },
+                              "onError": {
+                                "action": "setState",
+                                "key": "resumeFilePath",
+                                "value": null
+                              }
+                            }
+                          },
+                          {
+                            "action": "apiCall",
+                            "operation": "invoke",
+                            "function": "score-resume-fit",
+                            "data": {
+                              "candidateName": "{{state.candidateName}}",
+                              "resumeText": "{{state.resumeText}}",
+                              "jdText": "{{state.jdText}}",
+                              "resumeFilePath": "{{state.resumeFilePath}}"
+                            },
+                            "onSuccess": {
+                              "action": "sequence",
+                              "actions": [
+                                { "action": "setState", "key": "result", "value": "{{event.data}}" },
+                                { "action": "setState", "key": "isScoring", "value": false }
+                              ]
+                            },
+                            "onError": {
+                              "action": "sequence",
+                              "actions": [
+                                { "action": "setState", "key": "scoreError", "value": "{{event.error.message}}" },
+                                { "action": "setState", "key": "isScoring", "value": false }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Card",
+            "props": { "title": "Scorecard" },
+            "children": [
+              {
+                "type": "Text",
+                "if": "{{!state.result}}",
+                "props": {
+                  "variant": "muted",
+                  "children": "Submit a resume and job description to see the fit scorecard here."
+                }
+              },
+              {
+                "type": "Stack",
+                "if": "{{state.result}}",
+                "props": { "spacing": 4 },
+                "children": [
+                  {
+                    "type": "Stack",
+                    "props": { "direction": "horizontal", "justify": "between", "align": "center" },
+                    "children": [
+                      { "type": "Heading", "props": { "level": 3, "children": "Fit Score" } },
+                      {
+                        "type": "Badge",
+                        "props": { "variant": "secondary", "children": "{{state.result.fitScore}}/100" }
+                      }
+                    ]
+                  },
+                  { "type": "Text", "props": { "children": "{{state.result.reasoning}}" } },
+                  {
+                    "type": "Grid",
+                    "props": { "columns": 2, "gap": 4 },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": { "spacing": 2 },
+                        "children": [
+                          { "type": "Text", "props": { "weight": "medium", "children": "Matched Skills" } },
+                          {
+                            "type": "Stack",
+                            "props": { "direction": "horizontal", "wrap": true, "spacing": 2 },
+                            "children": [
+                              {
+                                "type": "Badge",
+                                "each": "{{state.result.matchedSkills}}",
+                                "as": "skill",
+                                "key": "{{skill}}",
+                                "props": { "variant": "default", "children": "{{skill}}" }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Stack",
+                        "props": { "spacing": 2 },
+                        "children": [
+                          { "type": "Text", "props": { "weight": "medium", "children": "Missing Skills" } },
+                          {
+                            "type": "Stack",
+                            "props": { "direction": "horizontal", "wrap": true, "spacing": 2 },
+                            "children": [
+                              {
+                                "type": "Badge",
+                                "each": "{{state.result.missingSkills}}",
+                                "as": "skill",
+                                "key": "{{skill}}",
+                                "props": { "variant": "outline", "children": "{{skill}}" }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Card",
+                    "props": { "title": "Extracted Profile" },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": { "spacing": 4 },
+                        "children": [
+                          {
+                            "type": "Stack",
+                            "props": { "spacing": 2 },
+                            "children": [
+                              { "type": "Text", "props": { "weight": "medium", "children": "Skills" } },
+                              {
+                                "type": "Stack",
+                                "props": { "direction": "horizontal", "wrap": true, "spacing": 2 },
+                                "children": [
+                                  {
+                                    "type": "Badge",
+                                    "each": "{{state.result.extracted.skills}}",
+                                    "as": "skill",
+                                    "key": "{{skill}}",
+                                    "props": { "variant": "secondary", "children": "{{skill}}" }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Stack",
+                            "props": { "spacing": 2 },
+                            "children": [
+                              { "type": "Text", "props": { "weight": "medium", "children": "Experience" } },
+                              {
+                                "type": "Text",
+                                "each": "{{state.result.extracted.experience}}",
+                                "as": "exp",
+                                "key": "{{exp.role}}-{{exp.company}}",
+                                "props": {
+                                  "size": "sm",
+                                  "children": "{{exp.role}} @ {{exp.company}} ({{exp.years}} yrs)"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "Stack",
+                            "props": { "spacing": 2 },
+                            "children": [
+                              { "type": "Text", "props": { "weight": "medium", "children": "Education" } },
+                              {
+                                "type": "Text",
+                                "each": "{{state.result.extracted.education}}",
+                                "as": "edu",
+                                "key": "{{edu}}",
+                                "props": { "size": "sm", "children": "{{edu}}" }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

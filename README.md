@@ -1,6 +1,10 @@
-# Boilerplate Stack
+# NduMan
 
-Phase 1 scaffolding for the JSON-driven Supabase + Temporal starter.
+Resume → structured candidate profile: upload a resume and a job description, extract skills and
+experience, score fit against the JD with reasoning, and review the scorecard next to the resume.
+
+Built on the JSON-driven Supabase + Temporal starter stack (see `AGENTS.md` for the underlying
+data-model conventions).
 
 ## Prerequisites
 - Docker Desktop with Compose v2
