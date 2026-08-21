@@ -158,6 +158,25 @@ export function createActionDispatcher(config: ActionDispatcherConfig) {
           result = await supabase.rpc(action.function, data as Record<string, unknown>);
           break;
 
+        case 'invoke': {
+          if (!action.function) throw new Error('Function name required for invoke');
+          result = await supabase.functions.invoke(action.function, {
+            body: data,
+          });
+          break;
+        }
+
+        case 'storageUpload': {
+          const upload = data as { bucket: string; path: string; file: File };
+          if (!upload?.bucket || !upload?.path || !upload?.file) {
+            throw new Error('storageUpload requires data.bucket, data.path, and data.file');
+          }
+          result = await supabase.storage
+            .from(upload.bucket)
+            .upload(upload.path, upload.file, { upsert: true });
+          break;
+        }
+
         default:
           throw new Error(`Unknown API operation: ${action.operation}`);
       }
@@ -172,9 +191,9 @@ export function createActionDispatcher(config: ActionDispatcherConfig) {
         queryClient.invalidateQueries({ queryKey: ['datasource'] });
       }
 
-      // Execute onSuccess action
+      // Execute onSuccess action, exposing the response payload as {{event.data}}
       if (action.onSuccess) {
-        await dispatch(action.onSuccess, context);
+        await dispatch(action.onSuccess, { ...context, event: { data: result.data } });
       }
     } catch (error) {
       console.error('API call failed:', error);
