@@ -37,8 +37,7 @@ stack:
 
 cluster_guardian:
   allowed_namespaces:
-    - <DEV_NAMESPACE>
-    - <TEST_NAMESPACE>
+    - <NAMESPACE_PREFIX>*
   issue_label: auto:cluster
 
 ops:
