@@ -4,7 +4,7 @@
 > run regenerates this branch. The machine-readable source of truth is [`runs.jsonl`](./runs.jsonl).
 > Deployed-environment E2E trends live separately on the [`e2e-history`](../../tree/e2e-history) branch.
 
-**Last updated:** — · 4 records · suites: `helm`, `seed`
+**Last updated:** 2026-08-24 07:27Z · 6 records · suites: `helm`, `seed`, `temporal`
 
 ![trend](./trend.svg)
 
@@ -12,14 +12,17 @@
 
 | Suite | Latest | When (UTC) | Pass 24h | Pass 7d | Green streak | Runs |
 |---|---|---|--:|--:|--:|--:|
-| `helm` | ❌ `failed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) | — | — | — | 0 | 2 |
+| `helm` | ✅ `passed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) | — | — | — | 1 | 3 |
 | `seed` | ❌ `failed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) | — | — | — | 0 | 2 |
+| `temporal` | ✅ `passed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) | 2026-08-24 07:27Z | 100% (1) | 100% (1) | 1 | 1 |
 
 
 ## Recent runs
 
 | When (UTC) | Suite | Result | Pass | Fail | Skip | Duration | Commit | Run |
 |---|---|---|--:|--:|--:|--:|---|---|
+| 2026-08-24 07:27Z | `temporal` | ✅ passed | 12 | 0 | 0 | 0.0s | `a6be36a` | [#8](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) |
+| — | `helm` | ✅ passed | 153 | 0 | 0 | — | `a6be36a` | [#8](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) |
 | — | `seed` | ❌ failed | 0 | 1 | 0 | — | `7079e92` | [#4](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) |
 | — | `helm` | ❌ failed | 151 | 2 | 0 | — | `7079e92` | [#4](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) |
 | — | `seed` | ❌ failed | 0 | 1 | 0 | — | `e53adae` | [#1](https://github.com/Thabekhulu2/NduMan/actions/runs/32462771891) |
