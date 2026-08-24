@@ -117,6 +117,18 @@ function evaluatePath(path: string, context: ExpressionContext): unknown {
   if (trimmedPath === 'null') return null;
   if (trimmedPath === 'undefined') return undefined;
 
+  // Handle array/string membership: <path>.includes(<arg>)
+  const includesMatch = trimmedPath.match(/^(.+)\.includes\((.+)\)$/);
+  if (includesMatch) {
+    const [, basePath, argExpr] = includesMatch;
+    const base = evaluatePath(basePath.trim(), context);
+    const arg = parseValue(argExpr.trim(), context);
+    if (Array.isArray(base) || typeof base === 'string') {
+      return (base as unknown[] | string).includes(arg as never);
+    }
+    return false;
+  }
+
   // Standard path resolution using lodash get
   return get(context, trimmedPath);
 }

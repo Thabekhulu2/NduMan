@@ -11,8 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResumesIndexRouteImport } from './routes/resumes/index'
-import { Route as EntitiesEntityTypeIndexRouteImport } from './routes/entities/$entityType/index'
-import { Route as EntitiesEntityTypeIdRouteImport } from './routes/entities/$entityType/$id'
+import { Route as CandidatesIndexRouteImport } from './routes/candidates/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,58 +23,40 @@ const ResumesIndexRoute = ResumesIndexRouteImport.update({
   path: '/resumes/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EntitiesEntityTypeIndexRoute = EntitiesEntityTypeIndexRouteImport.update({
-  id: '/entities/$entityType/',
-  path: '/entities/$entityType/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EntitiesEntityTypeIdRoute = EntitiesEntityTypeIdRouteImport.update({
-  id: '/entities/$entityType/$id',
-  path: '/entities/$entityType/$id',
+const CandidatesIndexRoute = CandidatesIndexRouteImport.update({
+  id: '/candidates/',
+  path: '/candidates/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/candidates': typeof CandidatesIndexRoute
   '/resumes': typeof ResumesIndexRoute
-  '/entities/$entityType/$id': typeof EntitiesEntityTypeIdRoute
-  '/entities/$entityType': typeof EntitiesEntityTypeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/candidates': typeof CandidatesIndexRoute
   '/resumes': typeof ResumesIndexRoute
-  '/entities/$entityType/$id': typeof EntitiesEntityTypeIdRoute
-  '/entities/$entityType': typeof EntitiesEntityTypeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/candidates/': typeof CandidatesIndexRoute
   '/resumes/': typeof ResumesIndexRoute
-  '/entities/$entityType/$id': typeof EntitiesEntityTypeIdRoute
-  '/entities/$entityType/': typeof EntitiesEntityTypeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/resumes'
-    | '/entities/$entityType/$id'
-    | '/entities/$entityType'
+  fullPaths: '/' | '/candidates' | '/resumes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/resumes' | '/entities/$entityType/$id' | '/entities/$entityType'
-  id:
-    | '__root__'
-    | '/'
-    | '/resumes/'
-    | '/entities/$entityType/$id'
-    | '/entities/$entityType/'
+  to: '/' | '/candidates' | '/resumes'
+  id: '__root__' | '/' | '/candidates/' | '/resumes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CandidatesIndexRoute: typeof CandidatesIndexRoute
   ResumesIndexRoute: typeof ResumesIndexRoute
-  EntitiesEntityTypeIdRoute: typeof EntitiesEntityTypeIdRoute
-  EntitiesEntityTypeIndexRoute: typeof EntitiesEntityTypeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -94,18 +75,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResumesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/entities/$entityType/': {
-      id: '/entities/$entityType/'
-      path: '/entities/$entityType'
-      fullPath: '/entities/$entityType'
-      preLoaderRoute: typeof EntitiesEntityTypeIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/entities/$entityType/$id': {
-      id: '/entities/$entityType/$id'
-      path: '/entities/$entityType/$id'
-      fullPath: '/entities/$entityType/$id'
-      preLoaderRoute: typeof EntitiesEntityTypeIdRouteImport
+    '/candidates/': {
+      id: '/candidates/'
+      path: '/candidates'
+      fullPath: '/candidates'
+      preLoaderRoute: typeof CandidatesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -113,9 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CandidatesIndexRoute: CandidatesIndexRoute,
   ResumesIndexRoute: ResumesIndexRoute,
-  EntitiesEntityTypeIdRoute: EntitiesEntityTypeIdRoute,
-  EntitiesEntityTypeIndexRoute: EntitiesEntityTypeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

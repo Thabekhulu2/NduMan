@@ -102,7 +102,10 @@ export function ComponentRenderer({
 
   // Resolve props (evaluate expressions)
   const resolvedProps = useMemo(() => {
-    return definition.props ? resolveProps(definition.props, context) : {};
+    const props = definition.props ? resolveProps(definition.props, context) : {};
+    // Carry the raw context (including any `each`-loop item) so action-dispatching
+    // components can merge it in at dispatch time — see EngineButton/EngineCheckbox.
+    return { ...props, __itemContext: context };
   }, [definition.props, context]);
 
   // Render children recursively

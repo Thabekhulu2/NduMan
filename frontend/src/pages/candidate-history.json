@@ -1,0 +1,297 @@
+{
+  "id": "candidate-history",
+  "title": "Candidate History",
+  "state": {
+    "selectedIds": [],
+    "pendingDeleteIds": [],
+    "deleteError": null
+  },
+  "dataSources": {
+    "scoredCandidates": {
+      "type": "supabase",
+      "table": "entities",
+      "select": "id, created_at, entity_versions!inner(data, is_current), entity_facts!inner(value, metadata, fact_types!inner(key))",
+      "filters": [
+        { "field": "entity_type", "op": "eq", "value": "resume" },
+        { "field": "entity_versions.is_current", "op": "eq", "value": true },
+        { "field": "entity_facts.fact_types.key", "op": "eq", "value": "resume_jd_fit_score" }
+      ],
+      "order": [{ "column": "created_at", "ascending": false }]
+    }
+  },
+  "layout": {
+    "type": "Stack",
+    "props": { "spacing": 6 },
+    "children": [
+      {
+        "type": "Stack",
+        "props": { "spacing": 1 },
+        "children": [
+          {
+            "type": "Heading",
+            "props": { "level": 1, "children": "Candidate History" }
+          },
+          {
+            "type": "Text",
+            "props": { "variant": "muted", "children": "Previously scored candidates, most recent first." }
+          }
+        ]
+      },
+      {
+        "type": "Text",
+        "if": "{{!data.scoredCandidates || data.scoredCandidates.length === 0}}",
+        "props": {
+          "variant": "muted",
+          "className": "text-center py-8",
+          "children": "No candidates scored yet."
+        }
+      },
+      {
+        "type": "Stack",
+        "if": "{{data.scoredCandidates && data.scoredCandidates.length > 0}}",
+        "props": { "direction": "horizontal", "justify": "between", "align": "center" },
+        "children": [
+          {
+            "type": "Stack",
+            "props": { "direction": "horizontal", "align": "center", "spacing": 2 },
+            "children": [
+              {
+                "type": "Button",
+                "props": {
+                  "variant": "outline",
+                  "size": "sm",
+                  "children": "Select All",
+                  "onClick": {
+                    "action": "custom",
+                    "handler": "selectAllIds",
+                    "payload": { "key": "selectedIds", "source": "scoredCandidates" }
+                  }
+                }
+              },
+              {
+                "type": "Button",
+                "props": {
+                  "variant": "outline",
+                  "size": "sm",
+                  "children": "Clear Selection",
+                  "onClick": {
+                    "action": "custom",
+                    "handler": "clearArray",
+                    "payload": { "key": "selectedIds" }
+                  }
+                }
+              },
+              {
+                "type": "Text",
+                "props": { "variant": "muted", "size": "sm", "children": "{{state.selectedIds.length}} selected" }
+              }
+            ]
+          },
+          {
+            "type": "Button",
+            "props": {
+              "variant": "destructive",
+              "size": "sm",
+              "disabled": "{{state.selectedIds.length === 0}}",
+              "children": "Delete Selected",
+              "onClick": {
+                "action": "openModal",
+                "modalId": "confirmDelete",
+                "props": { "pendingDeleteIds": "{{state.selectedIds}}" }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Stack",
+        "props": { "spacing": 4 },
+        "children": [
+          {
+            "type": "Card",
+            "each": "{{data.scoredCandidates}}",
+            "as": "candidate",
+            "key": "{{candidate.id}}",
+            "children": [
+              {
+                "type": "Stack",
+                "props": { "spacing": 4 },
+                "children": [
+                  {
+                    "type": "Stack",
+                    "props": { "direction": "horizontal", "justify": "between", "align": "center" },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": { "direction": "horizontal", "align": "center", "spacing": 3 },
+                        "children": [
+                          {
+                            "type": "Checkbox",
+                            "props": {
+                              "checked": "{{state.selectedIds.includes(candidate.id)}}",
+                              "onChange": {
+                                "action": "custom",
+                                "handler": "toggleArrayItem",
+                                "payload": { "key": "selectedIds", "value": "{{candidate.id}}" }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Heading",
+                            "props": {
+                              "level": 3,
+                              "children": "{{candidate.entity_versions[0].data.candidate_name || 'Unnamed candidate'}}"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Stack",
+                        "props": { "direction": "horizontal", "align": "center", "spacing": 2 },
+                        "children": [
+                          {
+                            "type": "Badge",
+                            "props": { "variant": "secondary", "children": "{{candidate.entity_facts[0].value}}/100" }
+                          },
+                          {
+                            "type": "Button",
+                            "props": {
+                              "variant": "destructive",
+                              "size": "sm",
+                              "children": "Delete",
+                              "onClick": {
+                                "action": "openModal",
+                                "modalId": "confirmDelete",
+                                "props": { "pendingDeleteIds": ["{{candidate.id}}"] }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Text",
+                    "props": { "variant": "muted", "size": "sm", "children": "Scored {{candidate.created_at}}" }
+                  },
+                  {
+                    "type": "Text",
+                    "props": { "children": "{{candidate.entity_facts[0].metadata.reasoning}}" }
+                  },
+                  {
+                    "type": "Grid",
+                    "props": { "columns": 2, "gap": 4 },
+                    "children": [
+                      {
+                        "type": "Stack",
+                        "props": { "spacing": 2 },
+                        "children": [
+                          { "type": "Text", "props": { "weight": "medium", "children": "Matched Skills" } },
+                          {
+                            "type": "Stack",
+                            "props": { "direction": "horizontal", "wrap": true, "spacing": 2 },
+                            "children": [
+                              {
+                                "type": "Badge",
+                                "each": "{{candidate.entity_facts[0].metadata.matched_skills}}",
+                                "as": "skill",
+                                "key": "{{skill}}",
+                                "props": { "variant": "default", "children": "{{skill}}" }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Stack",
+                        "props": { "spacing": 2 },
+                        "children": [
+                          { "type": "Text", "props": { "weight": "medium", "children": "Missing Skills" } },
+                          {
+                            "type": "Stack",
+                            "props": { "direction": "horizontal", "wrap": true, "spacing": 2 },
+                            "children": [
+                              {
+                                "type": "Badge",
+                                "each": "{{candidate.entity_facts[0].metadata.missing_skills}}",
+                                "as": "skill",
+                                "key": "{{skill}}",
+                                "props": { "variant": "outline", "children": "{{skill}}" }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "modals": {
+    "confirmDelete": {
+      "title": "Delete candidate history?",
+      "description": "This will permanently remove {{state.pendingDeleteIds.length}} candidate record(s) and their scores. This cannot be undone.",
+      "size": "sm",
+      "content": {
+        "type": "Stack",
+        "props": { "spacing": 4 },
+        "children": [
+          {
+            "type": "Alert",
+            "if": "{{state.deleteError}}",
+            "props": {
+              "variant": "destructive",
+              "title": "Delete failed",
+              "description": "{{state.deleteError}}"
+            }
+          },
+          {
+            "type": "Stack",
+            "props": { "direction": "horizontal", "justify": "end", "spacing": 2 },
+            "children": [
+              {
+                "type": "Button",
+                "props": {
+                  "variant": "outline",
+                  "children": "Cancel",
+                  "onClick": { "action": "closeModal" }
+                }
+              },
+              {
+                "type": "Button",
+                "props": {
+                  "variant": "destructive",
+                  "children": "Delete",
+                  "onClick": {
+                    "action": "apiCall",
+                    "operation": "delete",
+                    "table": "entities",
+                    "match": { "id": "{{state.pendingDeleteIds}}" },
+                    "onSuccess": {
+                      "action": "sequence",
+                      "actions": [
+                        { "action": "setState", "key": "selectedIds", "value": [] },
+                        { "action": "setState", "key": "deleteError", "value": null },
+                        { "action": "closeModal" }
+                      ]
+                    },
+                    "onError": {
+                      "action": "setState",
+                      "key": "deleteError",
+                      "value": "{{event.error.message}}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

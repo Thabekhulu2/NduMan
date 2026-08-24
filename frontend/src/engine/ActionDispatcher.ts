@@ -147,11 +147,18 @@ export function createActionDispatcher(config: ActionDispatcherConfig) {
           result = await supabase.from(action.table).upsert(data as Record<string, unknown>[]);
           break;
 
-        case 'delete':
+        case 'delete': {
           if (!action.table) throw new Error('Table required for delete');
           if (!match) throw new Error('Match criteria required for delete');
-          result = await supabase.from(action.table).delete().match(match);
+          let deleteQuery = supabase.from(action.table).delete();
+          for (const [field, val] of Object.entries(match)) {
+            deleteQuery = (
+              Array.isArray(val) ? deleteQuery.in(field, val) : deleteQuery.eq(field, val)
+            ) as typeof deleteQuery;
+          }
+          result = await deleteQuery;
           break;
+        }
 
         case 'rpc':
           if (!action.function) throw new Error('Function name required for rpc');

@@ -16,6 +16,8 @@ interface EngineButtonProps extends EngineComponentProps {
   loading?: boolean;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
+  /** Raw expression context from ComponentRenderer, incl. any `each`-loop item */
+  __itemContext?: Record<string, unknown>;
 }
 
 export function EngineButton({
@@ -27,12 +29,13 @@ export function EngineButton({
   type = 'button',
   className,
   children,
+  __itemContext,
 }: EngineButtonProps) {
   const { dispatch } = useUIEngine();
 
   const handleClick = async () => {
     if (onClick && !disabled && !loading) {
-      await dispatch(onClick);
+      await dispatch(onClick, __itemContext);
     }
   };
 

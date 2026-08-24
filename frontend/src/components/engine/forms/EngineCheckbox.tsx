@@ -15,6 +15,8 @@ interface EngineCheckboxProps extends EngineComponentProps {
   name?: string;
   disabled?: boolean;
   className?: string;
+  /** Raw expression context from ComponentRenderer, incl. any `each`-loop item */
+  __itemContext?: Record<string, unknown>;
 }
 
 export function EngineCheckbox({
@@ -24,12 +26,16 @@ export function EngineCheckbox({
   name,
   disabled = false,
   className,
+  __itemContext,
 }: EngineCheckboxProps) {
   const { dispatch } = useUIEngine();
 
   const handleChange = (newChecked: boolean) => {
     if (onChange) {
-      dispatch(onChange, { event: { target: { checked: newChecked, value: newChecked } } });
+      dispatch(onChange, {
+        ...__itemContext,
+        event: { target: { checked: newChecked, value: newChecked } },
+      });
     }
   };
 

@@ -118,6 +118,30 @@ export function UIEngine({ page, params = {} }: UIEngineProps) {
         refetch,
         openModal,
         closeModal,
+        customHandlers: {
+          // Toggle a value in/out of the array at state[key]. Payload: { key, value }
+          toggleArrayItem: (payload, context) => {
+            const { key, value } = payload as { key: string; value: unknown };
+            const current = Array.isArray(context.state[key])
+              ? (context.state[key] as unknown[])
+              : [];
+            const next = current.includes(value)
+              ? current.filter((v) => v !== value)
+              : [...current, value];
+            setState(key, next);
+          },
+          // Set state[key] to the list of `id`s from data[source]. Payload: { key, source }
+          selectAllIds: (payload, context) => {
+            const { key, source } = payload as { key: string; source: string };
+            const rows = (context.data?.[source] as { id: string }[] | undefined) || [];
+            setState(key, rows.map((row) => row.id));
+          },
+          // Reset state[key] to an empty array. Payload: { key }
+          clearArray: (payload) => {
+            const { key } = payload as { key: string };
+            setState(key, []);
+          },
+        },
       }),
     [setState, navigate, queryClient, refetch, openModal, closeModal]
   );
