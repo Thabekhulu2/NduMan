@@ -4,7 +4,7 @@
 > run regenerates this branch. The machine-readable source of truth is [`runs.jsonl`](./runs.jsonl).
 > Deployed-environment E2E trends live separately on the [`e2e-history`](../../tree/e2e-history) branch.
 
-**Last updated:** 2026-08-24 07:27Z · 6 records · suites: `helm`, `seed`, `temporal`
+**Last updated:** 2026-08-25 07:23Z · 8 records · suites: `helm`, `seed`, `temporal`
 
 ![trend](./trend.svg)
 
@@ -12,16 +12,18 @@
 
 | Suite | Latest | When (UTC) | Pass 24h | Pass 7d | Green streak | Runs |
 |---|---|---|--:|--:|--:|--:|
-| `helm` | ✅ `passed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) | — | — | — | 1 | 3 |
+| `helm` | ✅ `passed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32821364031) | — | — | — | 2 | 4 |
 | `seed` | ❌ `failed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) | — | — | — | 0 | 2 |
-| `temporal` | ✅ `passed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) | 2026-08-24 07:27Z | 100% (1) | 100% (1) | 1 | 1 |
+| `temporal` | ✅ `passed` [↗](https://github.com/Thabekhulu2/NduMan/actions/runs/32821364031) | 2026-08-25 07:23Z | 100% (2) | 100% (2) | 2 | 2 |
 
 
 ## Recent runs
 
 | When (UTC) | Suite | Result | Pass | Fail | Skip | Duration | Commit | Run |
 |---|---|---|--:|--:|--:|--:|---|---|
+| 2026-08-25 07:23Z | `temporal` | ✅ passed | 12 | 0 | 0 | 0.0s | `48ee277` | [#9](https://github.com/Thabekhulu2/NduMan/actions/runs/32821364031) |
 | 2026-08-24 07:27Z | `temporal` | ✅ passed | 12 | 0 | 0 | 0.0s | `a6be36a` | [#8](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) |
+| — | `helm` | ✅ passed | 153 | 0 | 0 | — | `48ee277` | [#9](https://github.com/Thabekhulu2/NduMan/actions/runs/32821364031) |
 | — | `helm` | ✅ passed | 153 | 0 | 0 | — | `a6be36a` | [#8](https://github.com/Thabekhulu2/NduMan/actions/runs/32701522136) |
 | — | `seed` | ❌ failed | 0 | 1 | 0 | — | `7079e92` | [#4](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) |
 | — | `helm` | ❌ failed | 151 | 2 | 0 | — | `7079e92` | [#4](https://github.com/Thabekhulu2/NduMan/actions/runs/32485664824) |
